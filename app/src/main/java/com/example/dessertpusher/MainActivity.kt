@@ -13,6 +13,10 @@ import com.example.android.dessertpusher.DessertTimer
 import com.example.dessertpusher.databinding.ActivityMainBinding
 import timber.log.Timber
 
+const val KEY_REVENUE = "key_revenue"
+const val KEY_DESSERT_SOLD = "key_dessert_sold"
+const val KEY_SECONDS_COUNT = "key_seconds_count"
+
 class MainActivity : AppCompatActivity() {
 
     private var revenue = 0
@@ -55,6 +59,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         dessertTimer = DessertTimer(this.lifecycle)
+
+        if (null != savedInstanceState) {
+            revenue = savedInstanceState.getInt(KEY_REVENUE)
+            dessertsSold = savedInstanceState.getInt(KEY_DESSERT_SOLD)
+            dessertTimer.setSecondsCount(savedInstanceState.getInt(KEY_SECONDS_COUNT))
+        }
 
         // Set the TextViews to the right values
         binding.revenue = revenue
@@ -129,6 +139,13 @@ class MainActivity : AppCompatActivity() {
             R.id.shareMenuButton -> onShare()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(KEY_REVENUE, revenue)
+        outState.putInt(KEY_DESSERT_SOLD, dessertsSold)
+        Timber.i("onSaveInstanceState called")
     }
 
     override fun onRestart() {
