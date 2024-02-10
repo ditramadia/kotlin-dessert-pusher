@@ -1,7 +1,12 @@
 package com.example.dessertpusher
 
+import android.content.ActivityNotFoundException
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
+import androidx.core.app.ShareCompat
 import androidx.databinding.DataBindingUtil
 import com.example.dessertpusher.databinding.ActivityMainBinding
 
@@ -88,5 +93,33 @@ class MainActivity : AppCompatActivity() {
             currentDessert = newDessert
             binding.dessertButton.setImageResource(newDessert.imageId)
         }
+    }
+
+    /**
+     * Menu methods
+     */
+    private fun onShare() {
+        val shareIntent = ShareCompat.IntentBuilder.from(this)
+            .setText(getString(R.string.share_text, dessertsSold, revenue))
+            .setType("text/plain")
+            .intent
+        try {
+            startActivity(shareIntent)
+        } catch (ex: ActivityNotFoundException) {
+            Toast.makeText(this, getString(R.string.sharing_not_available),
+                Toast.LENGTH_LONG).show()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.shareMenuButton -> onShare()
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
